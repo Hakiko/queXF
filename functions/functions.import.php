@@ -243,7 +243,7 @@ function newquestionnaire($filename,$desc = "",$type="pnggray",$double_entry){
 			if ($pid)
 			{
 				$pages++;
-				print T_("BARCODE") . ": $pid";
+				print T_("BARCODE") . ": $pid <br>";
 
 				//Don't do these calculations when importing as they need to be set up after the fact
 	
@@ -292,7 +292,7 @@ function newquestionnaire($filename,$desc = "",$type="pnggray",$double_entry){
 	
 			}
 			else
-				print T_("INVALID - IGNORING BLANK PAGE");
+				print T_("INVALID - IGNORING BLANK PAGE<br>");
 
 			unset($data);
 			unset($image);
@@ -309,7 +309,7 @@ function newquestionnaire($filename,$desc = "",$type="pnggray",$double_entry){
 	if ($pages <= 0)
 	{
 		$db->FailTrans();
-		print T_("Failed to import as no pages were detected");
+		print T_("Failed to import as no pages were detected<br>");
 	}
 	
 
@@ -662,7 +662,7 @@ function multiplechoiceguess($pid,$fid)
 function import($filename,$description = false)
 {
 	global $db;
-
+	print T_("Importing file $filename<br>");
 	set_time_limit(240);
 	
 	$filehash = sha1_file($filename);
@@ -687,7 +687,7 @@ function import($filename,$description = false)
 	
 
 	//Import the file
-	print T_("Importing") . ": $filename";
+	print T_("Importing") . ": $filename<br>";
 
 
 
@@ -722,7 +722,7 @@ function import($filename,$description = false)
 	$file = $tmp . $n . ".png";
 	while (file_exists($file))
 	{
-		print T_("Finding qid") . "...";
+		print T_("Finding qid") . "...<br>";
 
 		//open file
 		$data = file_get_contents($file);
@@ -809,7 +809,7 @@ function import($filename,$description = false)
 
 	if ($qid != "")
 	{
-		print T_("Got qid") . ": $qid...";
+		print T_("Got qid") . ": $qid...<br>";
 
 		//create form entry in DB
 		$sql = "INSERT INTO forms (fid,qid,description)
@@ -887,7 +887,7 @@ function import($filename,$description = false)
  
 				if ($pid)
 				{
-					print T_("Processing pid") . ": $pid...";
+					print T_("Processing pid") . ": $pid...<br>";
 	
 					//get the page id from the page table
 					$sql = "SELECT * FROM pages
@@ -898,7 +898,7 @@ function import($filename,$description = false)
 	
 					if (empty($page))
 					{
-						print T_("Pid not identified for this page, inserting into missing pages...");
+						print T_("Pid not identified for this page, inserting into missing pages...<br>");
 	
 						//store in missing pages table
 						$sql = "INSERT INTO missingpages
@@ -969,12 +969,12 @@ function import($filename,$description = false)
 	
 					if(BLANK_PAGE_DETECTION && is_blank_page($image,defaultpage($width,$height)))
 					{
-						print T_("Blank page: ignoring");
+						print T_("Blank page: ignoring<br>");
 						//let this page dissolve into the ether
 					}
 					else
 					{
-						print T_("Could not get pid, inserting into missing pages...");
+						print T_("Could not get pid, inserting into missing pages...<br>");
 	
 						//store in missing pages table
 						$sql = "INSERT INTO missingpages
@@ -1034,7 +1034,7 @@ function import($filename,$description = false)
 	{
 		//form could not be identified...
 		//do nothing?
-		print T_("Could not get qid...");
+		print T_("Could not get qid...<br>");
 	
 		//Update or insert record in to processforms log database
 		if ($pfid == false)
@@ -1094,7 +1094,7 @@ function import($filename,$description = false)
 			//There is one page in the missing database and one page missing from the form
 			$row = $rs[0];
 		
-			print T_("Automatically processing the 1 missing page for this form - assuming pid:"). " {$row['pid']} - {$row['pidentifierval']}";
+			print T_("Automatically processing the 1 missing page for this form - assuming pid:"). " {$row['pid']} - {$row['pidentifierval']}<br>";
 			
 			$mpid = $row['mpid'];
 			$image = imagecreatefromstring($row['mpimage']);
@@ -1161,7 +1161,7 @@ function import($filename,$description = false)
 
 				$db->Execute($sql);
 
-				print T_("Deleting missing pages as all form page slots filled");
+				print T_("Deleting missing pages as all form page slots filled<br>");
 			}
 		}
 	}
@@ -1381,7 +1381,7 @@ function import_bandingxml($xml,$qid,$erase = false)
  */
 function import_directory($dir)
 {
-
+	print T_("Importing a directory $dir<br>");
 	if ($handle = opendir($dir)) {
 	
 		while (false !== ($file = readdir($handle))) {
@@ -1392,15 +1392,19 @@ function import_directory($dir)
 					//print "<p>$file</p>";
 			                $r = import("$dir/$file");
 					if ($r == false)
-						print T_("File already in database");
+						print T_("File already in database<br>");
 					 //unlink($file);
 					 //rename("$dir/$file","$dir/$file.done");
+				} else {
+					print T_("File is not a pdf<br>");
 				}
 			}
 		}
 	
 		closedir($handle);
 	
+	} else {
+		print T_("Failed to open directory<br>");
 	}
 
 }
