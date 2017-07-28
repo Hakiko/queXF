@@ -227,6 +227,24 @@ function validateCodaBar($s)
  */
 function barcode($image, $step = 1, $length = false, $numsonly = false)
 {
+	$tmp = tempnam(TEMPORARY_DIRECTORY, "BARCODE");
+	error_log("Running zbar on $tmp!");
+	imagepng($image, $tmp);
+	$tmpResized = "$tmp" . "_resized.png";
+	$tmpResult = "$tmp" . ".txt";
+	exec("convert -resize 320x240 $tmp $tmpResized && zbarimg $tmpResized | cut -d ':' -f 2 > $tmpResult");
+	$result = file_get_contents($tmpResult);
+	$rlen = strlen($result);
+	error_log("The barcode is $rlen characters long");
+	unlink($tmp);
+	unlink($tmpResult);
+	unlink($tmpResized);
+	if ($rlen == $length) {
+		return substr($result, 0, 8);
+	} else {
+		return false;
+	}
+
 	if (function_exists('imagefilter') &&
 		function_exists('imagetruecolortopalette') &&
 		function_exists('imagecolorset') &&
@@ -278,7 +296,7 @@ function barcode($image, $step = 1, $length = false, $numsonly = false)
     $result = file_get_contents($tmp . ".txt");
     unlink($tmp);
     unlink($tmp . ".txt");
-  
+
     if (!empty($result))
     {
       //check length if set to check
