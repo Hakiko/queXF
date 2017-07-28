@@ -73,7 +73,11 @@ define('BARCODE_TLY_PORTION2',0.8); //Top left Y
 define('BARCODE_BRX_PORTION2',0.5); //Bottom right X
 define('BARCODE_BRY_PORTION2',1); //Bottom right Y
 
-
+define('SPLIT_SCANNING', false);
+define('HORI_WIDTH', 6);
+define('VERT_WIDTH', 6);
+define('PAGE_GUIDE_X_PORTION',0.09);
+define('PAGE_GUIDE_Y_PORTION',0.14);
 
 //Do not remove the following line:
 include(dirname(__FILE__) . '/config.default.php');
