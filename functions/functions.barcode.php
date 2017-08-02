@@ -232,13 +232,16 @@ function barcode($image, $step = 1, $length = false, $numsonly = false)
 	imagepng($image, $tmp);
 	$tmpResized = "$tmp" . "_resized.png";
 	$tmpResult = "$tmp" . ".txt";
-	exec("convert -resize 320x240 $tmp $tmpResized && zbarimg $tmpResized | cut -d ':' -f 2 > $tmpResult");
+	exec("convert -resize 50%x50% $tmp $tmpResized && zbarimg $tmpResized | cut -d ':' -f 2 > $tmpResult");
 	$result = file_get_contents($tmpResult);
-	$rlen = strlen($result);
-	error_log("The barcode is $rlen characters long");
+	$rlen = strlen($result) - 1;
+	error_log("The barcode is $rlen characters long: \"$result\"");
 	unlink($tmp);
 	unlink($tmpResult);
-	unlink($tmpResized);
+  unlink($tmpResized);
+  if (!$length && $rlen > 0) {
+    return substr($result, 0, $rlen - 1);
+  }
 	if ($rlen == $length) {
 		return substr($result, 0, 8);
 	} else {
