@@ -78,6 +78,8 @@ define('HORI_WIDTH', 6);
 define('VERT_WIDTH', 6);
 define('PAGE_GUIDE_X_PORTION',0.09);
 define('PAGE_GUIDE_Y_PORTION',0.14);
+//define('PAGE_GUIDE_X_PORTION',0.13); //A3 format
+//define('PAGE_GUIDE_Y_PORTION',0.12); //A3 format
 
 //Do not remove the following line:
 include(dirname(__FILE__) . '/config.default.php');
